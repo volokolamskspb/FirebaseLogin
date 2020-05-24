@@ -1,33 +1,41 @@
 <template>
     <div class="vue-tempalte">
-        <h3>Добро Пожаловать</h3>
-           <p>{{user.displayName}}</p>
-           <p>{{user.email}}</p>
-        
-        <button 
-        type="submit" 
+      <v-row>
+        <v-col cols="12" sm="12">
+          <p class="text-right">Добро Пожаловать, {{user.displayName}}</p>
+          <p class="text-right">{{user.email}}</p>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="12" sm="12">
+        <v-btn 
         class="btn btn-dark btn-lg btn-block"
         @click="logOut()">
             Выйти
-        </button>
+        </v-btn>
+      </v-col>
+    </v-row>
     </div>
 </template>
 
 <script>
 import firebase from "firebase";
+import { mapState } from 'vuex';
 
 export default {
   data() {
     return {
-      user: null
+      
     };
   },
+  computed: mapState(['user']),
   created() {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-        this.user = user;
+          console.log(user);
+          this.$store.commit('setUser', user)
       } else {
-        this.user = null;
+        this.$router.push('/login')
       }
     });
   },

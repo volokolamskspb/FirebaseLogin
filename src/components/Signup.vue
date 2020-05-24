@@ -1,34 +1,46 @@
 <template>
     <div class="vue-tempalte">
-        <form @submit.prevent="userRegistration">
-            <h3>Форма Регистрация</h3>
+        <v-form   
+        ref="form"
+        :lazy-validation="lazy"
+        v-model="valid">
+             <v-row>
+              <v-col cols="12" sm="12">
+                <v-text-field 
+                  label="Имя"
+                  required
+                  v-model="name" :rules="nameRules"/>
+                </v-col>
+                <v-col cols="12" sm="12">
+                <v-text-field 
+                  label="E-mail"
+                  type="email"
+                  required
+                  v-model="email" 
+                  :rules="emailRules" />
+                </v-col>
+                <v-col cols="12" sm="12">
+                <v-text-field 
+                  label="Пароль" 
+                  type="passowrd"
+                  required
+                  v-model="password" 
+                  :rules="passwordRules"/>
+                </v-col>
+               <v-col cols="12" sm="12">
+                <v-btn @click="userRegistration" class="btn btn-dark btn-lg btn-block" :disabled="!valid">
+                   Регистрация
+                </v-btn>
+              </v-col>
+              <v-col cols="12" sm="12">
+              <p class="forgot-password text-right">
+                  Уже зарегистрированы? 
+                  <router-link :to="{name: 'login'}">Войти</router-link>
+              </p>
+            </v-col>
+                 </v-row>
+        </v-form>
 
-            <div class="form-group">
-                <label>Имя</label>
-                <input type="text" class="form-control form-control-lg" v-model="user.name" />
-            </div>
-
-            <div class="form-group">
-                <label>E-mail</label>
-                <input type="email" class="form-control form-control-lg" v-model="user.email" />
-            </div>
-
-            <div class="form-group">
-                <label>Пароль</label>
-                <input type="password" class="form-control form-control-lg" v-model="user.password" />
-            </div>
-			
-			
-
-            <button type="submit" class="btn btn-dark btn-lg btn-block">
-               Регистрация
-            </button>
-
-            <p class="forgot-password text-right">
-                Уже зарегистрированы? 
-                <router-link :to="{name: 'login'}">Войти?</router-link>
-            </p>
-        </form>
     </div>
 </template>
 
@@ -38,32 +50,53 @@ import firebase from "firebase";
 
 
 export default {
-  data() {
-    return {
-      user: {
-        name: '',
-        email: '',
-        password: ''
-      }
-    };
-  },
-  
-  methods: {
+    data: () => ({
+      name: '',
+      nameRules: [
+        v => !!v || 'Name is required',
+        v => (v && v.length <= 10) || 'Имя должно быть не более 10 букв',
+      ],
+      email: '',
+      emailRules: [
+        v => !!v || 'E-mail is required',
+        v => /.+@.+\..+/.test(v) || 'E-mail не валиден',
+      ],
+      password: '',
+      passwordRules: [
+        v => !!v || 'Password is required',
+        v => /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,10}$/.test(v) || 'Пароль должен состоять из букв верхнего и нижнего регистра, цифр и быть не менее 6 и не более 10 символов',
+      ],
+      valid: true,
+      lazy: false,
+    }),
+    mounted() {
+      this.$refs.form.validate();
+    },
+    methods: {
     userRegistration() {
+      this.$refs.form.validate()
+      if(!this.valid) return;
       firebase
       .auth()
-      .createUserWithEmailAndPassword(this.user.email, this.user.password)
+      .createUserWithEmailAndPassword(this.email, this.password)
       .then((res) => {
         res.user
           .updateProfile({
-            displayName: this.user.name
+            displayName: this.name
           })
-          .then(() => {
-            this.$router.push('/login')
+          .then(() => {              
+            res.user.sendEmailVerification()
+              .then((res) => {
+                console.log(res)
+                this.$router.push('/login')
+              })
+              .catch((error) => {
+                console.log(error.message);
+              });
           });
       })
       .catch((error) => {
-         alert(error.message);
+         console.log(error.message);
       });
     }
   }

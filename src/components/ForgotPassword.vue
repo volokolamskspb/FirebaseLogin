@@ -1,6 +1,7 @@
 <template>
     <div class="vue-tempalte">
-        <form @submit.prevent="forgetPassword">
+      <div v-if="msg">{{msg}}</div>
+        <form v-else @submit.prevent="forgetPassword">
             <h3>Забыл пароль</h3>
 
             <div class="form-group">
@@ -19,6 +20,7 @@ import firebase from "firebase";
 export default {
   data() {
     return {
+      msg: '',
       user: {   
         email: ''
       }
@@ -30,12 +32,9 @@ export default {
         .auth()
         .sendPasswordResetEmail(this.user.email)
         .then(() => {
-            alert('Check your registered email to reset the password!')
-            this.user = {   
-              email: ''
-            }
+            this.msg ='Check your registered email to reset the password!'
         }).catch((error) => {
-          alert(error)
+          this.msg = error
         })
     }
   }
