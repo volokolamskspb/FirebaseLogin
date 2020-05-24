@@ -1,11 +1,10 @@
 # Настройка проекта
 npm install
-
-#для development mode
+# для development mode
 npm run serve
 
 # Для production mode 
 npm run build
 
-#Lints и fixes файлы
+# Lints и fixes файлы
 npm run lint
