@@ -3,7 +3,8 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import * as firebase from 'firebase';
-import * as firebaseConfig  from '../firebase.js'
+import { default as firebaseConfig }  from '../firebase.js'
+console.log(firebaseConfig)
 import '@/assets/css/main.css'
 import vuetify from './plugins/vuetify';
 
