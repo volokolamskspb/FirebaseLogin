@@ -67,7 +67,7 @@ export default {
   },
   methods: {
     userLogin() {
-      if(!this.valid) return;
+      if(!this.$refs.form.validate()) return;
         firebase
         .auth()
         .signInWithEmailAndPassword(this.email, this.password)

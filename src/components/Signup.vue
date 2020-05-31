@@ -77,8 +77,7 @@ export default {
     },
     methods: {
     userRegistration() {
-      this.$refs.form.validate()
-      if(!this.valid) return;
+      if(!this.$refs.form.validate()) return;
       firebase
       .auth()
       .createUserWithEmailAndPassword(this.email, this.password)

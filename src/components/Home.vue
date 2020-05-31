@@ -34,19 +34,13 @@ export default {
       firebase.auth().onAuthStateChanged((user) => {
         if (user) {
             this.$store.commit('setUser', user)
-        } else {
-          this.$router.push('/login')
         }
       });
     }
   },
   methods: {
     logOut() {
-      firebase.auth().signOut().then(() => {
-        firebase.auth().onAuthStateChanged(() => {
-          this.$router.push('/login')
-        })
-      })
+      firebase.auth().signOut()
     }
   }
 };
