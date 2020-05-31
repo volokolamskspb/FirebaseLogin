@@ -1,9 +1,8 @@
 <template>
     <div class="vue-tempalte">
-      <div v-if="msg">{{msg}}</div>
-        <form v-else @submit.prevent="forgetPassword">
+        <form @submit.prevent="forgetPassword">
             <h3>Забыл пароль</h3>
-
+            <div v-if="msg" class="error">{{msg}}</div>
             <div class="form-group">
                 <label>E-mail</label>
                 <input type="email" class="form-control form-control-lg" v-model="user.email" />

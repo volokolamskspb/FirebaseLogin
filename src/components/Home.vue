@@ -2,8 +2,8 @@
     <div class="vue-tempalte">
       <v-row>
         <v-col cols="12" sm="12">
-          <p class="text-right">Добро Пожаловать, {{user.displayName}}</p>
-          <p class="text-right">{{user.email}}</p>
+          <p>Добро Пожаловать, {{user.displayName}}</p>
+          <p>{{user.email}}</p>
         </v-col>
       </v-row>
       <v-row>
@@ -30,14 +30,15 @@ export default {
   },
   computed: mapState(['user']),
   created() {
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-          console.log(user);
-          this.$store.commit('setUser', user)
-      } else {
-        this.$router.push('/login')
-      }
-    });
+    if(!this.user.displayName){
+      firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+            this.$store.commit('setUser', user)
+        } else {
+          this.$router.push('/login')
+        }
+      });
+    }
   },
   methods: {
     logOut() {

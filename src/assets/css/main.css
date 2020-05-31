@@ -3,14 +3,11 @@
 }
 
 body {
-  background: #2554FF !important;
-  min-height: 100vh;
-  display: flex;
   font-weight: 400;
   font-family: Open Sans, sans-serif;
 }
-.error, .v-messages__message {
-  color: red;
+.v-application--wrap {
+  background: rebeccapurple;
 }
 
 body,

@@ -5,18 +5,17 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
   state: {
-    user: {}
+    user: {},
+    loading: true
   },
   mutations: {
     setUser(state, user) {
       state.user = user;
+    },
+    setLoading(state, loader) {
+      state.loading = loader;
     }
   },
-  actions: {
-    setUser({ commit }, user) {
-      commit('setUser', user);
-    }
-  }
 })
 
 export default store;

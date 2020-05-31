@@ -2,6 +2,11 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import store from '../store'
 import firebase from "firebase";
+import Signup from '../components/Signup.vue'
+import Login from '../components/Login.vue'
+import Home from '../components/Home.vue'
+import ForgotPassword from '../components/ForgotPassword.vue'
+import NotFound from '../components/NotFound.vue'
 
 Vue.use(VueRouter)
 
@@ -9,22 +14,26 @@ Vue.use(VueRouter)
   {
     path: '/signup',
     name: 'signup',
-    component: () => import('../components/Signup.vue')
+    component: Signup
   },
   {
     path: '/login',
     name: 'login',
-    component: () => import('../components/Login.vue')
+    component: Login
   },
   {
     path: '/forgot-password',
     name: 'forgot-password',
-    component: () => import('../components/ForgotPassword.vue')
+    component: ForgotPassword
   },
   {
     path: '/',
     name: 'home',
-    component: () => import('../components/Home.vue')
+    component: Home
+  },
+  { 
+    path: '*', 
+    component: NotFound
   }
 ]
 
@@ -35,14 +44,20 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
+  store.commit('setLoading', true)
   firebase.auth().onAuthStateChanged((user) => {
-      if (user && !store.state.user.displayName) {
+      if (user) {
         store.commit('setUser', user)
-      } else if(to.name == 'home') {
+        if(to.name == 'login' || to.name == 'signup'){
+          next({ name: 'home' })
+        }
+      }
+      else if(to.name == 'home') {
         next({ name: 'login' })
       }
   });
   next()
+  setTimeout(() => store.commit('setLoading', false), 500)
 })
 
 export default router

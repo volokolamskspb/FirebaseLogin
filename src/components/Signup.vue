@@ -1,5 +1,6 @@
 <template>
     <div class="vue-tempalte">
+       <div v-if="error">{{error}}</div>
         <v-form   
         ref="form"
         :lazy-validation="lazy"
@@ -23,6 +24,7 @@
                 <v-text-field 
                   label="Пароль" 
                   type="passowrd"
+                  @keyup.enter="userLogin" 
                   required
                   v-model="password" 
                   :rules="passwordRules"/>
@@ -59,7 +61,7 @@ export default {
       email: '',
       emailRules: [
         v => !!v || 'E-mail is required',
-        v => /.+@.+\..+/.test(v) || 'E-mail не валиден',
+        v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
       ],
       password: '',
       passwordRules: [
@@ -68,6 +70,7 @@ export default {
       ],
       valid: true,
       lazy: false,
+      error: '',
     }),
     mounted() {
       this.$refs.form.validate();
@@ -86,12 +89,11 @@ export default {
           })
           .then(() => {              
             res.user.sendEmailVerification()
-              .then((res) => {
-                console.log(res)
+              .then(() => {
                 this.$router.push('/login')
               })
               .catch((error) => {
-                console.log(error.message);
+                this.error = error.message;
               });
           });
       })
